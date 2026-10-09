@@ -497,7 +497,7 @@ function confetti(container) {
 function showReveal(code) {
   $('organizar').hidden = true;
   $('revelar').hidden = false;
-  document.title = 'Seu amigo secreto — Amigo Secreto';
+  document.title = 'Seu amigo secreto · Amigo Secreto';
   const question = $('revelar-pergunta');
   const result = $('revelar-resultado');
   const error = $('revelar-erro');
@@ -581,7 +581,7 @@ function route() {
   }
   $('revelar').hidden = true;
   $('organizar').hidden = false;
-  document.title = 'Amigo Secreto — sorteio com restrições e um link secreto para cada pessoa';
+  document.title = 'Amigo Secreto: sorteio com restrições e um link secreto para cada pessoa';
 }
 
 setupEvent();

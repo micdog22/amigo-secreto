@@ -1,4 +1,4 @@
-# Amigo Secreto — sorteio com restrições e um link secreto para cada pessoa (HTML + CSS + JS)
+# Amigo Secreto: sorteio com restrições e um link secreto para cada pessoa (HTML + CSS + JS)
 
 Organizar amigo secreto pelo WhatsApp costuma dar trabalho: alguém precisa sortear sem ver o resultado, casais não podem se tirar e sempre tem quem tire o próprio nome. Esta página resolve isso: você cadastra as pessoas e as restrições, sorteia e recebe **um link secreto para cada participante**. Cada pessoa abre o próprio link e vê só quem ela tirou, junto com a data, o local e o valor combinado.
 
@@ -37,7 +37,7 @@ O conteúdo do link é um pequeno JSON (`{v, from, to, event}`) misturado com um
 ## Como funciona o sorteio
 
 1. Primeiro a página confere se o sorteio é possível. Ela monta um emparelhamento máximo (algoritmo de Kuhn) entre "quem tira" e "quem é tirado". Se não existir sorteio válido, o teorema de Hall aponta o grupo de pessoas que disputa menos nomes do que gente, e é isso que aparece na explicação. Na corrente única, a página também confere se o grupo não ficou dividido em partes que não se alcançam.
-2. Depois tenta embaralhamentos uniformes (Fisher–Yates com `crypto.getRandomValues`) até achar um que respeite todas as regras. Assim, cada combinação válida tem a mesma chance de sair. Na corrente única, embaralha a ordem da roda.
+2. Depois tenta embaralhamentos uniformes (Fisher-Yates com `crypto.getRandomValues`) até achar um que respeite todas as regras. Assim, cada combinação válida tem a mesma chance de sair. Na corrente única, embaralha a ordem da roda.
 3. Se as restrições forem tantas que os embaralhamentos não acham resultado rápido, entra um backtracking aleatório (quem tem menos opções escolhe primeiro; na corrente única, com poda de quem ficaria sem saída). No sorteio comum, o emparelhamento do passo 1 garante um resultado se o backtracking passar do limite de esforço.
 
 ## Como rodar localmente
@@ -64,4 +64,4 @@ Issues e pull requests são bem-vindos.
 
 ## Licença
 
-MIT — veja [LICENSE](LICENSE).
+MIT. Veja [LICENSE](LICENSE).
