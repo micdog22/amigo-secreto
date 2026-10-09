@@ -1,0 +1,11 @@
+{
+  "name": "amigo-secreto",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Sorteio de amigo secreto com restrições (casais, por exemplo) e um link secreto para cada pessoa, pronto para enviar pelo WhatsApp.",
+  "type": "module",
+  "scripts": { "test": "node --test" },
+  "license": "MIT",
+  "repository": { "type": "git", "url": "git+https://github.com/micdog22/amigo-secreto.git" },
+  "homepage": "https://micdog22.github.io/amigo-secreto/"
+}

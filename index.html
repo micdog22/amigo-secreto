@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Amigo Secreto — sorteio com restrições e um link secreto para cada pessoa</title>
+  <meta name="description" content="Organize o amigo secreto: sorteio com restrições (casais), corrente única e um link secreto para cada pessoa, pronto para mandar no WhatsApp. Sem cadastro.">
+  <meta name="theme-color" content="#be123c">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎁</text></svg>">
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./src/app.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <h1>Amigo Secreto</h1>
+    <p class="lead">Sorteio com restrições e um link secreto para cada pessoa. Sem cadastro e sem app: é só mandar o link.</p>
+  </header>
+
+  <main>
+    <div id="organizar">
+      <section class="card" aria-labelledby="evento-titulo">
+        <h2 id="evento-titulo"><span class="step" aria-hidden="true">1</span> Evento</h2>
+        <p class="hint top">Tudo opcional. Essas informações aparecem para cada pessoa junto com o resultado.</p>
+        <div class="field">
+          <label for="ev-titulo">Nome do evento</label>
+          <input id="ev-titulo" maxlength="80" autocomplete="off" placeholder="Ex.: Amigo secreto da família Exemplo">
+        </div>
+        <div class="grid three">
+          <div class="field">
+            <label for="ev-data">Data</label>
+            <input id="ev-data" type="date">
+          </div>
+          <div class="field">
+            <label for="ev-hora">Horário</label>
+            <input id="ev-hora" type="time">
+          </div>
+          <div class="field">
+            <label for="ev-valor">Valor sugerido</label>
+            <input id="ev-valor" inputmode="decimal" autocomplete="off" placeholder="Ex.: 50,00" aria-describedby="ev-valor-erro">
+          </div>
+        </div>
+        <p class="field-error" id="ev-valor-erro" hidden></p>
+        <div class="field">
+          <label for="ev-local">Local</label>
+          <input id="ev-local" maxlength="120" autocomplete="off" placeholder="Ex.: Salão de festas do prédio">
+        </div>
+        <div class="field">
+          <label for="ev-obs">Observações</label>
+          <textarea id="ev-obs" rows="3" maxlength="300" placeholder="Ex.: nada de meias!"></textarea>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="pessoas-titulo">
+        <h2 id="pessoas-titulo"><span class="step" aria-hidden="true">2</span> Participantes</h2>
+        <form id="form-pessoa" novalidate>
+          <label for="pessoa-nome">Nome</label>
+          <div class="input-row">
+            <input id="pessoa-nome" maxlength="60" autocomplete="off" placeholder="Ex.: Ana Exemplo" aria-describedby="pessoa-erro">
+            <button class="btn" type="submit">Adicionar</button>
+          </div>
+          <p class="field-error" id="pessoa-erro" role="alert" hidden></p>
+        </form>
+        <details class="bulk">
+          <summary>Colar vários nomes de uma vez</summary>
+          <label for="pessoas-lote">Um nome por linha</label>
+          <textarea id="pessoas-lote" rows="5" placeholder="Ana Exemplo&#10;Bruno Exemplo&#10;Carla Exemplo"></textarea>
+          <div class="actions">
+            <button type="button" class="btn secondary" id="pessoas-lote-add">Adicionar todos</button>
+          </div>
+          <p class="hint" id="pessoas-lote-status" role="status"></p>
+        </details>
+        <p class="hint" id="pessoas-contagem">Nenhum participante ainda.</p>
+        <ul class="chips" id="pessoas-lista" aria-label="Participantes"></ul>
+      </section>
+
+      <section class="card" aria-labelledby="restr-titulo">
+        <h2 id="restr-titulo"><span class="step" aria-hidden="true">3</span> Restrições <span class="muted">(opcional)</span></h2>
+        <p class="hint top">Para casais ou para quem não pode se tirar. Ninguém tira a si mesmo: isso já é automático.</p>
+        <form id="form-restricao" novalidate>
+          <div class="grid two">
+            <div class="field">
+              <label for="restr-de">Quem</label>
+              <select id="restr-de"></select>
+            </div>
+            <div class="field">
+              <label for="restr-para">não pode tirar</label>
+              <select id="restr-para"></select>
+            </div>
+          </div>
+          <label class="check"><input type="checkbox" id="restr-mutua" checked> Nos dois sentidos (um não tira o outro)</label>
+          <div class="actions">
+            <button class="btn secondary" type="submit" id="restr-add">Adicionar restrição</button>
+          </div>
+          <p class="field-error" id="restr-erro" role="alert" hidden></p>
+        </form>
+        <ul class="restr-list" id="restr-lista" aria-label="Restrições"></ul>
+      </section>
+
+      <section class="card" aria-labelledby="sorteio-titulo">
+        <h2 id="sorteio-titulo"><span class="step" aria-hidden="true">4</span> Sorteio</h2>
+        <label class="check"><input type="checkbox" id="corrente-unica"> <span>Corrente única <span class="muted">— todo mundo forma uma roda só, bom para revelar em sequência</span></span></label>
+        <div class="confirm" id="resortear-aviso" hidden>
+          <p id="resortear-texto"></p>
+          <div class="actions">
+            <button type="button" class="btn" id="resortear-sim">Sortear de novo</button>
+            <button type="button" class="btn secondary" id="resortear-nao">Cancelar</button>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn big" type="button" id="sortear">Sortear</button>
+        </div>
+        <p class="form-error" id="sorteio-erro" role="alert" hidden></p>
+      </section>
+
+      <section class="card" id="links" hidden aria-labelledby="links-titulo">
+        <h2 id="links-titulo" tabindex="-1">Links secretos</h2>
+        <p class="notice">Mande para cada pessoa <strong>só o link dela</strong>. Não abra os links dos outros: eles mostram o resultado.</p>
+        <p class="warn-box" id="links-desatualizado" hidden>Participantes, restrições ou a corrente única mudaram depois do sorteio. Os links abaixo ainda são do sorteio anterior; sorteie de novo para aplicar as mudanças.</p>
+        <ul class="link-rows" id="links-lista"></ul>
+        <p class="status" id="links-status" role="status"></p>
+        <div class="field manual-copy" id="links-manual" hidden>
+          <label for="links-manual-texto">Copie a mensagem manualmente</label>
+          <textarea id="links-manual-texto" rows="3" readonly></textarea>
+        </div>
+        <div class="full-result">
+          <button type="button" class="btn secondary" id="completo-abrir">Mostrar resultado completo</button>
+          <div class="confirm" id="completo-aviso" hidden>
+            <p><strong>Tem certeza?</strong> Se você também participa, vai descobrir quem tirou quem e perde a graça.</p>
+            <div class="actions">
+              <button type="button" class="btn" id="completo-sim">Sim, mostrar</button>
+              <button type="button" class="btn secondary" id="completo-nao">Cancelar</button>
+            </div>
+          </div>
+          <div id="completo" hidden>
+            <h3>Resultado completo</h3>
+            <p class="hint" id="completo-roda" hidden></p>
+            <ul class="pairs" id="completo-lista"></ul>
+            <button type="button" class="btn secondary" id="completo-esconder">Esconder resultado</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="card about" aria-labelledby="sobre-titulo">
+        <h2 id="sobre-titulo">Como funcionam os links</h2>
+        <p>O resultado de cada pessoa vai dentro do próprio link, depois do <code>#</code>, embaralhado para ninguém ler sem querer. Essa parte do endereço não é enviada para servidor nenhum e não há banco de dados: a lista fica salva só neste navegador.</p>
+        <p><strong>Importante:</strong> o embaralhamento evita espiadas acidentais, mas não é criptografia. Quem souber decodificar consegue ler o conteúdo de um link, então quem organiza não deve abrir os links dos outros.</p>
+        <div class="actions">
+          <button type="button" class="btn secondary" id="recomecar">Começar outro amigo secreto</button>
+        </div>
+      </section>
+    </div>
+
+    <section id="revelar" class="reveal" hidden>
+      <div class="card reveal-card" id="revelar-cartao">
+        <p class="eyebrow">Amigo secreto</p>
+        <h2 id="revelar-titulo">Seu amigo secreto</h2>
+        <div id="revelar-pergunta">
+          <p class="question">Você é <strong id="revelar-nome"></strong>?</p>
+          <div class="actions center">
+            <button type="button" class="btn big" id="revelar-sim">Sou eu, revelar</button>
+            <button type="button" class="btn secondary" id="revelar-nao">Não sou</button>
+          </div>
+          <p class="hint">Antes de revelar, veja se ninguém está olhando a sua tela.</p>
+        </div>
+        <p class="warn-box" id="revelar-outro" hidden></p>
+        <div id="revelar-resultado" hidden>
+          <div class="gift" id="revelar-presente" aria-hidden="true"><span class="lid"></span><span class="box"></span></div>
+          <div aria-live="polite">
+            <p class="you-got" id="revelar-frase" hidden>Você tirou</p>
+            <p class="target" id="revelar-alvo"></p>
+          </div>
+          <button type="button" class="btn secondary" id="revelar-esconder" hidden>Esconder</button>
+        </div>
+        <p class="form-error" id="revelar-erro" hidden></p>
+        <dl class="event-info" id="revelar-evento" hidden></dl>
+      </div>
+      <p class="center small"><a href="./">Organizar um amigo secreto</a></p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>Tudo roda no seu navegador. Código aberto no <a href="https://github.com/micdog22/amigo-secreto">GitHub</a> · Licença MIT</p>
+  </footer>
+</body>
+</html>
